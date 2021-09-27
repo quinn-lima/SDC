@@ -2,9 +2,19 @@
 const database = require('./database/database.js');
 
 module.exports = {
+    
+
+    master: function (req, res) {
+        return database.master(req.query.product_id)
+
+
+    },
 
     reviews: function (req, res) {
-        console.log('get review', req.query)
+        if (req.query.product_id === undefined) {
+            req.query.product_id = req.headers.product_id;
+        }
+        
         database.reviews(req.query.product_id).then((results) => {
            
             for (let i = 0; i < results.rows.length; i++) {
@@ -20,16 +30,18 @@ module.exports = {
                 if (results.rows[i].response == 'null') {
                     results.rows[i].response = null;
                 }
-                console.log('review calls', results.rows[i].response)
+
             }
-        
         
          res.send(results.rows)
 
         }).catch((err) => { console.log(err)})
     },
     meta: function(req, res) {
-        console.log('get meta')
+        if (req.query.product_id === undefined) {
+            req.query.product_id = req.headers.product_id;
+        }
+        
         database.meta(req.query.product_id).then((results) => {
             let ratingSum = {};
             let characteristicObj = {};
@@ -66,30 +78,25 @@ module.exports = {
                 characteristics: characteristics
             }
             res.send (metaResults)
-            
-
-
         }).catch((err) => { console.log(err)})
     },
     help: function(req, res) {
-        console.log('help')
-        database.help(req.body.review_id).then((results) => { console.log('help worked')
+        
+        database.help(req.body.review_id).then((results) => { 
         res.send(201)
         }).catch((err) => { console.log(err)})
     },
     postReview: function(req, res) {
-        console.log('post review', req.body)
         database.postReview(req.body).then ((results) => {
-            console.log('resultssss', results)
+            
             res.send(200)
         }).catch((err) => { console.log(err)})
     },
     report: function(req, res) {
-        console.log('reported', req.body.review_id)
         database.report(req.body.review_id).then((results) => {
-            console.log('report success')
             res.send(201)
         }).catch((err) => { console.log(err)})
     },
 
 }
+

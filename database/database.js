@@ -51,9 +51,25 @@ get product inserted in params, count with 100 results per page, sort by whateve
 */
 
 module.exports = {
+      master: function(product_id) {
+        return new Promise((resolve, reject) => {
+          db.query(`SELECT characteristics.id AS characteristic_id, reviews.id AS review_id, characteristics.name, characteristics_reviews.value, reviews.rating, reviews.date, reviews.summary, reviews.body, reviews.recommend, reviews.reported, reviews.reviewer_name, reviews.response, reviews.helpfulness, reviews_photos.url FROM reviews_schema.reviews LEFT JOIN reviews_schema.reviews_photos ON reviews.id = reviews_photos.review_id INNER JOIN reviews_schema.characteristics ON characteristics.product_id = reviews.product_id INNER JOIN reviews_schema.characteristics_reviews ON characteristics_reviews.characteristic_id = characteristics.id WHERE reviews.product_id = ${product_id} AND characteristics_reviews.review_id = reviews.id;`, [], (err, res) => {
+             if (err) {
+               reject(err);
+             } else {
+               resolve(res);
+             }
+           });
+         });
+
+      },
+
       reviews: function (product_id) {
         return new Promise((resolve, reject) => {
-         db.query(`SELECT reviews.id, reviews.rating, reviews.date, reviews.summary, reviews.body, reviews.recommend, reviews.reported, reviews.reviewer_name, reviews.response, reviews.helpfulness, reviews_photos.url FROM reviews_schema.reviews LEFT JOIN reviews_schema.reviews_photos ON reviews.id = reviews_photos.review_id WHERE reviews.product_id = ${product_id}`, [], (err, res) => {
+         db.query(`SELECT reviews.id, reviews.rating, reviews.date, reviews.summary, reviews.body, 
+         reviews.recommend, reviews.reported, reviews.reviewer_name, reviews.response, reviews.helpfulness, 
+         reviews_photos.url FROM reviews_schema.reviews LEFT JOIN 
+         reviews_schema.reviews_photos ON reviews.id = reviews_photos.review_id WHERE reviews.product_id = ${product_id}`, [], (err, res) => {
             if (err) {
               reject(err);
             } else {
@@ -66,22 +82,6 @@ module.exports = {
 
         //console.log('some', someShit)
       },
-      
-    
-      
-      
-      /*
-      GET META
-      return axios.get(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews/meta/?product_id=${product}`, {
-          headers: {
-              Authorization: apiToken
-            }
-        }).then((results) => {
-            console.log('getMetaaa', results.data)
-            return results.data;
-        */
-       // make sure to take in the product id
-       //
             meta: function (product_id) {
                 return new Promise((resolve, reject) => {
                   db.query(`SELECT reviews.rating, reviews.recommend, characteristics.id, characteristics.name, characteristics_reviews.value FROM reviews_schema.reviews INNER JOIN reviews_schema.characteristics ON characteristics.product_id = reviews.product_id INNER JOIN reviews_schema.characteristics_reviews ON characteristics_reviews.characteristic_id = characteristics.id WHERE reviews.product_id = ${product_id} AND characteristics_reviews.review_id = reviews.id;`, [], (err, res) => {
@@ -247,7 +247,6 @@ post review {
                 */
 
                 report: function (review_id) {
-                  console.log('made it to retport')
                     return new Promise((resolve, reject) => {
                       db.query(`UPDATE reviews_schema.reviews SET reported = true WHERE reviews.id = ${review_id};`, [], (err, res) => {
                         if (err) {
