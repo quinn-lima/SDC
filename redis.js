@@ -1,5 +1,7 @@
-const { master } = require('./controller.js');
+//const master = require('./controller.js').master;
 const redis = require('redis');
+const e = require('express');
+const database = require('./database/database.js');
 
 const client = redis.createClient();
 
@@ -8,7 +10,7 @@ client.on('connect', () => {
 });
 client.on('error', (err) => { console.log(err); });
 
-module.exports = {
+module.exports = { 
   masterRedis: async (req, res) => {
     if (req.query.product_id === undefined) {
         req.query.product_id = req.headers.product_id;
@@ -20,7 +22,7 @@ module.exports = {
         res.send(parsedResponse);
       } else {
           console.log('from DB')
-          master(req, res).then((results) => {
+          database.master(req.query.product_id).then((results) => {
 
         
             let ratingSum = {};
@@ -118,4 +120,6 @@ module.exports = {
       }
     });
   },
+  client: client
 };
+

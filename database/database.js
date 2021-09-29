@@ -1,54 +1,6 @@
 var db = require('./index.js');
 
-//different queries
-/*
-REVIEWS
 
-headers: {
-      Authorization: apiToken
-    },
-    params: {
-      sort: sort,
-      count: 100,
-      product_id: product
-    }
-
-
-
-get product inserted in params, count with 100 results per page, sort by whatever is inserted into the 
-    {
-  "product": "2",
-  "page": 0,
-  "count": 5,
-  "results": [
-    {
-      "review_id": 5,
-      "rating": 3,
-      "summary": "I'm enjoying wearing these shades",
-      "recommend": false,
-      "response": null,
-      "body": "Comfortable and practical.",
-      "date": "2019-04-14T00:00:00.000Z",
-      "reviewer_name": "shortandsweeet",
-      "helpfulness": 5,
-      "photos": [{
-          "id": 1,
-          "url": "urlplaceholder/review_5_photo_number_1.jpg"
-        },
-        {
-          "id": 2,
-          "url": "urlplaceholder/review_5_photo_number_2.jpg"
-        },
-        // ...
-      ]
-    },
-    {
-    combine this with the meta data for initial requests
-    combine this with characteristics reviews
-        -each review has size, width, comfort and cooresponding number
-    as well as recomended? 
-    
-*/
 
 module.exports = {
       master: function(product_id) {
@@ -77,10 +29,6 @@ module.exports = {
             }
           });
         });
-        
-      // db.query('SELECT * FROM reviews WHERE reviews.product_id = 47421', []).then((results) => { console.log(results)}).catch((err)=>{console.log(err)})
-
-        //console.log('some', someShit)
       },
             meta: function (product_id) {
                 return new Promise((resolve, reject) => {
@@ -96,16 +44,7 @@ module.exports = {
           
 
 
-            /*
             
-            PUT HELP
-            return axios.put(`https://app-hrsei-api.herokuapp.com/api/fec2/hr-rpp/reviews/${reviewID}/helpful`, null, {
-                headers: {
-                    Authorization: apiToken
-                }
-
-                update reviews.helpfulness += 1
-            */
                 help: function (review_id) {
                     return new Promise((resolve, reject) => {
                       db.query(`UPDATE reviews_schema.reviews SET helpfulness = helpfulness + 1 WHERE reviews.id = ${review_id};`, [], (err, res) => {
@@ -139,6 +78,7 @@ module.exports = {
                 postReview: function (req) {
                     //generate query string for 
                     //characteristics keys 
+                    console.log('begin')
                     var queryString = `WITH rev_key AS (INSERT INTO reviews_schema.reviews (product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness) VALUES (${req.product_id}, ${req.rating}, null, '${req.summary}', '${req.body}', ${req.recommend}, false, '${req.name}', '${req.email}', null, 0) RETURNING id) INSERT INTO reviews_schema.characteristics_reviews (review_id, characteristic_id, value) VALUES`
 
                     for (let key in req.characteristics) {
@@ -160,16 +100,16 @@ module.exports = {
                     console.log('querystring', queryString)
 
 
-                    // return new Promise((resolve, reject) => {
-                    //   db.query(queryString + ';', [], (err, res) => {
-                    //     if (err) {
-                    //       reject(err);
-                    //     } else {
-                    //       resolve(res);
-                    //     }
+                    return new Promise((resolve, reject) => {
+                      db.query(queryString + ';', [], (err, res) => {
+                        if (err) {
+                          reject(err);
+                        } else {
+                          resolve(res);
+                        }
                
-                    //   });
-                    // });
+                      });
+                    });
                   },
 
                 

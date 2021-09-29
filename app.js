@@ -1,6 +1,5 @@
 var express = require('express');
 //var db = require('./db');
-var database = require('./database/database.js')
 //var router = require('./routes/routes.js');
 var controller = require('./controller.js')
 
@@ -16,7 +15,7 @@ module.exports.app = app;
 app.set('port', 5000); // hello how are you today
 
 // Logging and parsing
-//app.use(morgan('dev'));
+
 app.use(parser.json());
 
 //app.get('/reviews', () => {console.log('made it')})

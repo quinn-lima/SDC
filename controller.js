@@ -1,15 +1,8 @@
 
 const database = require('./database/database.js');
+const client = require ('./redis.js').client;
 
 module.exports = {
-    
-
-    master: function (req, res) {
-        return database.master(req.query.product_id)
-
-
-    },
-
     reviews: function (req, res) {
         if (req.query.product_id === undefined) {
             req.query.product_id = req.headers.product_id;
@@ -81,19 +74,41 @@ module.exports = {
         }).catch((err) => { console.log(err)})
     },
     help: function(req, res) {
+        console.log('made it to help')
         
         database.help(req.body.review_id).then((results) => { 
+        client.flushall(function(err, success) {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log(success)
+            }
+        })
         res.send(201)
         }).catch((err) => { console.log(err)})
     },
     postReview: function(req, res) {
-        database.postReview(req.body).then ((results) => {
-            
+        
+        database.postReview(req.body).then((results) => {
+            client.flushall(function(err, success) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log(success)
+                }
+            })
             res.send(200)
         }).catch((err) => { console.log(err)})
     },
     report: function(req, res) {
         database.report(req.body.review_id).then((results) => {
+            client.flushall(function(err, success) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log(success)
+                }
+            })
             res.send(201)
         }).catch((err) => { console.log(err)})
     },
