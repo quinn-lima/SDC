@@ -7,7 +7,7 @@ const { password } = require('../config');
 //postgres://userName:password@serverName/ip:port/nameOfDatabase";
 //var db = new pg.Client(cn);
 const cn= {
-    "host": "localhost",
+    "host": "ec2-3-138-186-135.us-east-2.compute.amazonaws.com",
     "port": 5432,
     "database": "sdc",
     "password": `password`,
