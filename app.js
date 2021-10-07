@@ -3,7 +3,7 @@ var express = require('express');
 //var router = require('./routes/routes.js');
 var controller = require('./controller.js')
 
-const {masterRedis} = require('./redis.js')
+//const {masterRedis} = require('./redis.js')
 
 //var morgan = require('morgan');
 var parser = require('body-parser');
@@ -20,7 +20,7 @@ app.use(parser.json());
 
 //app.get('/reviews', () => {console.log('made it')})
 // Set up our routes
-app.get('/master', masterRedis)
+app.get('/master', controller.master)
 
 app.get('/reviews', controller.reviews)
 
