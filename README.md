@@ -7,5 +7,5 @@ PostgresQL has been seeded over 1 million records and queries were optimised to 
 The backed was Load-tested and scaled backend using a custom load balancer with Redis Caching on AWS EC2 instances to be able to handle greater than 1000 rps.
 API endpoints were testing using Loader.io
 
+<img width="1145" alt="Screen Shot 2021-12-13 at 12 17 22 PM" src="https://user-images.githubusercontent.com/75652493/145882202-be92010f-af81-48c2-9a91-71a8d0ffd1ae.png">
 
-![Loader io](https://user-images.githubusercontent.com/75652493/145881452-22e4f8ff-332d-4ddf-965a-88ddfb875fcd.png)
